@@ -10,6 +10,8 @@ const Ground = ({ target }) => {
     const intervalRef = useRef()
     const [text, setText] = useState("")
     const caughtRef = useRef(false)
+    const [harryPos, setHarryPos] = useState({ top: 0, left: 0 })
+const [snitchPos, setSnitchPos] = useState({ top: 0, left: 0 })
 
     const getRandomDots = () => {
         const width = window.innerWidth
@@ -35,20 +37,15 @@ const Ground = ({ target }) => {
     }
 
     useEffect(() => {
-        if (snitchRef.current) {
-            gsap.to(snitchRef.current, {
-                rotate: 360,
-                duration: 0.5,       // controls rotation speed, smaller = faster
-                ease: "linear",
-                repeat: -1           // infinite rotation
-            });
-        }
+        
+        setHarryPos(getRandomDots())
+    setSnitchPos(getRandomDots())
         const handleMouse = (e) => {
             if (caughtRef.current) return
             if (harryRef.current) {
                 gsap.to(harryRef.current, {
-                    left: e.clientX - 150, // center Harry
-                    top: e.clientY - 150,
+                    left: e.clientX - 75, // center Harry
+                    top: e.clientY - 75,
                     duration: 0.05,
                     onUpdate: () => {
                         if (isColliding(harryRef.current, snitchRef.current)) {
@@ -85,8 +82,7 @@ const Ground = ({ target }) => {
                 gsap.to(snitchRef.current, {
                     left: randomWidth,
                     top: randomHeight,
-                    duration: 3,
-                    ease:"power1.inOut"
+                    duration: 2,
                 })
             }
         }, 400)
@@ -107,8 +103,10 @@ const Ground = ({ target }) => {
                 ref={harryRef}
                 src="/images/harry.png"
                 alt="Harry in broom"
-                width={300}
+                width={150}
                 className="absolute transform scale-x-[-1] top-0 left-0"
+                    style={{ top: harryPos.randomHeight, left: harryPos.randomWidth }}
+
             />
             <img
                 ref={snitchRef}
@@ -116,6 +114,8 @@ const Ground = ({ target }) => {
                 alt="golden snitch"
                 width={50}
                 className="absolute top-0 left-0"
+                    style={{ top: snitchPos.randomHeight, left: snitchPos.randomWidth }}
+
             />
             {caughtRef.current &&
                 createPortal(
